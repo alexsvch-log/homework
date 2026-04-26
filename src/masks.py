@@ -11,7 +11,7 @@ def get_mask_card_number(card_number: str) -> str:
 
     # Маскируем части (заменяем * цифры с 7 по 12)
     # Формат: 7000 92** **** 6361
-    masked_card_number = f"{clean_card_number[0:4]} {clean_card_number[5:7]}** **** {clean_card_number[12:16]}"
+    masked_card_number = f"{clean_card_number[0:4]} {clean_card_number[4:6]}** **** {clean_card_number[12:16]}"
     return masked_card_number
 
 

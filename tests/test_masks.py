@@ -7,8 +7,8 @@ from src.masks import get_mask_card_number, get_mask_account
 # Функция теста
 def test_get_mask_card_number() -> None:
     # Проверка: ожидаемый результат == фактический
-    assert get_mask_card_number("7000792289606361") == "7000 92** **** 6361"
-    assert get_mask_card_number("700 07922 8960 63 61") == "7000 92** **** 6361"
+    assert get_mask_card_number("7000792289606361") == "7000 79** **** 6361"
+    assert get_mask_card_number("700 07922 8960 63 61") == "7000 79** **** 6361"
     assert get_mask_card_number("700 07922 8960 6333 61") == "Ошибка: Неверная длина номера карты"
 
 

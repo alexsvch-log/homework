@@ -1,5 +1,7 @@
-from masks import get_mask_card_number
-from masks import get_mask_account
+from datetime import datetime
+
+from src.masks import get_mask_card_number
+from src.masks import get_mask_account
 
 
 def mask_account_card(card_account_number: str) -> str:
@@ -12,20 +14,22 @@ def mask_account_card(card_account_number: str) -> str:
 
     parts: list[str] = card_account_number.split()
     cart_number: str = parts[-1]
+    print(cart_number)
+    print(get_mask_card_number(cart_number))
     cart_name: str = " ".join(parts[:-1])
     return f"{cart_name} {get_mask_card_number(cart_number)}"
 
 
-print(mask_account_card("Visa Platinum 7000792289606361"))
+print(mask_account_card("MasterCard 7158300734726758"))
 print(mask_account_card("Счет 73654108430135874305"))
 
 
 def get_date(data_time: str) -> str:
     """Функция принимает на вход строку с датой в формате "2024-03-11T02:26:18.671407" и возвращает строку с датой
-    в формате "ДД.ММ.ГГГГ" ("11.03.2024")"""
+    в ISO формате "ДД.ММ.ГГГГ" ("11.03.2024")"""
 
-    date: str = data_time.replace("-", "")[0:8]
-    return f"{date[6:8]}.{date[4:6]}.{date[0:4]}"
+    date: datetime = datetime.fromisoformat(data_time)
+    return date.strftime("%d.%m.%Y")
 
 
 print(get_date("2024-03-11T02:26:18.671407"))
