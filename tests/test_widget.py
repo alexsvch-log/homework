@@ -16,6 +16,12 @@ def test_mask_account_card() -> None:
     assert mask_account_card("Visa Platinum 8990922113665229") == "Visa Platinum 8990 92** **** 5229"
     assert mask_account_card("Visa Gold 5999414228426353") == "Visa Gold 5999 41** **** 6353"
     assert mask_account_card("Счет 73654108430135874305") == "Счет **4305"
+    assert mask_account_card() == "Ошибка: Входные данные отсутствуют"
+    assert mask_account_card("") == "Ошибка: Строка пуста"
+    assert (
+        mask_account_card("Visa Platinum 8990922113665229, Счет 73654108430135874305")
+        == "Ошибка: Слишком много входных данных"
+    )
 
 
 # Функция теста
