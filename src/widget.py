@@ -31,10 +31,7 @@ def mask_account_card(card_account_number: str | None = None) -> str:
         account_number: str = card_account_number.split()[-1]
         return f"Счет {get_mask_account(account_number)}"
 
-    parts: list[str] = card_account_number.split()
     cart_number: str = parts[-1]
-    print(cart_number)
-    print(get_mask_card_number(cart_number))
     cart_name: str = " ".join(parts[:-1])
     return f"{cart_name} {get_mask_card_number(cart_number)}"
 
