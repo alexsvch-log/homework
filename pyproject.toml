@@ -22,10 +22,12 @@ lint = [
     "flake8 (>=7.3.0,<8.0.0)",
     "black (>=26.3.1,<27.0.0)",
     "isort (>=8.0.1,<9.0.0)",
-    "mypy (>=1.20.2,<2.0.0)"
+    "mypy (>=1.20.1)",
+    "flake8-pyproject (>=1.2.4,<2.0.0)"
 ]
 dev = [
-    "pytest (>=9.0.3,<10.0.0)"
+    "pytest (>=9.0.3,<10.0.0)",
+    "pytest-cov (>=7.1.0,<8.0.0)"
 ]
 
 [tool.flake8]
@@ -38,7 +40,8 @@ exclude = [".git", "__pycache__", "venv", ".venv"]
 # Игнорировать правила для конкретных файлов
 per-file-ignores = [
     "__init__.py:F401",
-    "tests/*:S101"
+    "tests/*:S101",
+    "helper.py:F401"
 ]
 
 [tool.black]
