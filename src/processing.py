@@ -1,7 +1,6 @@
 def filter_by_state(transactions_original_list: list, state: str = "EXECUTED") -> list:
     """Функция принимает словарь с транзакциями и выбирает только те транзакции,
     которые заданы в ключе state (по умолчанию значение state = 'EXECUTED')"""
-    # print(type(transactions_original_list))
     transactions_filtered_by_state: list = []
     for transaction in transactions_original_list:
         if transaction["state"] == state:

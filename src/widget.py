@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from src.masks import get_mask_card_number
-from src.masks import get_mask_account
+from src.masks import get_mask_account, get_mask_card_number
 
 
 def mask_account_card(card_account_number: str | None = None) -> str:
@@ -17,15 +16,15 @@ def mask_account_card(card_account_number: str | None = None) -> str:
     либо из только из набора цифр, не рассматривается"""
 
     if card_account_number is None:  # Проверка - передано ли хоть что-то
-        return "Ошибка: Входные данные отсутствуют"
+        raise ValueError("Ошибка - входные данные отсутствуют")
 
     parts: list[str] = card_account_number.split()
 
     if not parts:  # Если передана пустая строка ""
-        return "Ошибка: Строка пуста"
+        raise ValueError("Ошибка - передана пустая строка")
 
     if len(parts) not in [2, 3]:  # Если передано более двух строк
-        return "Ошибка: Слишком много входных данных"
+        raise ValueError("Ошибка - слишком много входных данных")
 
     if "Счет" in card_account_number:  # Если в строке присутствует слово 'Счет', то это номер расчетного счета
         account_number: str = card_account_number.split()[-1]
@@ -36,19 +35,9 @@ def mask_account_card(card_account_number: str | None = None) -> str:
     return f"{card_name} {get_mask_card_number(card_number)}"
 
 
-# print(mask_account_card("MasterCard 7158300734726758"))
-# print(mask_account_card("Счет 73654108430135874305"))
-# print(mask_account_card())
-# print(mask_account_card(""))
-# print(mask_account_card("Счет 73654108430135874305, MasterCard 7158300734726758"))
-
-
 def get_date(data_time: str) -> str:
     """Функция принимает на вход строку с датой в формате "2024-03-11T02:26:18.671407" и возвращает строку с датой
     в ISO формате "ДД.ММ.ГГГГ" ("11.03.2024")"""
 
     date: datetime = datetime.fromisoformat(data_time)
     return date.strftime("%d.%m.%Y")
-
-
-# print(get_date("2024-03-11T02:26:18.671407"))
