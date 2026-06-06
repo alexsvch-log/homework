@@ -288,6 +288,18 @@ for _ in range(7):
 # 0000 0000 0009 9999
 ```
 
+### 5. Модуль decorators (Декоратор логирования)
+Автоматически фиксирует хронологию выполнения функций (время старта, результат или тип ошибки с входными параметрами). Логи сохраняются в директорию `logs/` в формате `.txt`.
+
+```python
+from decorators import log
+
+@log(filename="test_success")  # Запись в logs/test_success.txt
+def my_func(): ...
+
+@log()  # Вывод строго в консоль
+def another_func(): ...
+```
 
 ## Тестирование и покрытие (Coverage)
 
@@ -313,6 +325,11 @@ poetry install
   poetry run pytest test/test_processing.py
   poetry run pytest test/test_generators.py
   ```
+* **Запуск тестов декоратора:**
+```bash
+  poetry run pytest tests/test_decorators.py
+```
+Для просмотра логов в консоли добавьте флаги `-s -k "console"`.*
 
 ### Анализ покрытия кода (Coverage)
 
