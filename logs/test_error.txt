@@ -1,4 +1,4 @@
-Старт: 2026-05-31 17:58:26.351
+Старт: 2026-06-09 14:27:03.422
 filter_by_state error: TypeError ('int' object is not iterable).
 Inputs: args=(12345,), kwargs={'state': 'EXECUTED'}
-Конец (ошибка): 2026-05-31 17:58:26.351
+Конец (ошибка): 2026-06-09 14:27:03.422
