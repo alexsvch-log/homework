@@ -292,13 +292,101 @@ for _ in range(7):
 Автоматически фиксирует хронологию выполнения функций (время старта, результат или тип ошибки с входными параметрами). Логи сохраняются в директорию `logs/` в формате `.txt`.
 
 ```python
-from decorators import log
+from src.decorators import log
 
 @log(filename="test_success")  # Запись в logs/test_success.txt
 def my_func(): ...
 
 @log()  # Вывод строго в консоль
 def another_func(): ...
+```
+
+### 6. Модуль utils
+* Модуль содержит новые функции  для работы с массивами транзакций:
+* Функцию, которая принимает на вход дату в формате "YYYY-MM-DDTHH:MM:SS.ffffff" и код требуемой валюты и возвращает курс
+    заданной валюты на заданную дату.
+
+* Функцию, которая принимает на вход транзакцию и возвращает сумму транзакции (amount) в рублях, округленную до копеек,
+    тип данных — float. Если транзакция была в USD или EUR, происходит конвертация суммы отранзакции в рубли по курсу
+     на дату транзакции.
+
+
+```python
+from src.utils import list_of_input_transaction
+
+from pathlib import Path
+
+# Путь к дефолтному файлу с транзакциями
+file_path = Path("data/operations.json")
+
+# Получение списка транзакций
+transactions = list_of_input_transaction(file_path)
+
+print(f"Загружено транзакций: {len(transactions)}")
+```
+### 7. Модуль external_api
+Функция принимает на вход путь до JSON-файла и возвращает список словарей с данными о финансовых транзакциях.
+    Если файл пустой, содержит не список или не найден, функция возвращает пустой список. Файл с данными о финансовых
+    транзациях operations.json находится в директорию data/ в корне проекта.
+    Если JSON-файл пустой, содержит не-список или не найден, возвращается пустой список.
+    Функция не проверяет считанный JSON-файл на правильность информации по всем транзакциям
+    (наличие всех ключей и т.п.)
+
+# Пример вызова первой функции rates_of_usd_eur_by_date
+
+* **Работа с выходными:** Если дата выпадает на выходной или праздничный день (когда торги не проводились), функция автоматически ищет и возвращает курс за ближайший *предыдущий* рабочий день.
+* **Ограничение:** Данные доступны для дат начиная с 1992 года.
+
+**Пример использования:**
+
+```python
+from src.external_api import rates_of_usd_eur_by_date
+
+# Пример 1: Запрос курса USD на рабочую дату
+usd_rate = rates_of_usd_eur_by_date("2023-10-25T14:30:00.000000", "USD")
+print(f"Курс USD: {usd_rate} руб.")  
+# Выведет: Курс USD: 93.4574 руб.
+
+# Пример 2: Запрос курса EUR на воскресенье (автоматически вернет курс за пятницу)
+eur_rate = rates_of_usd_eur_by_date("2023-10-22T12:00:00.000000", "EUR")
+print(f"Курс EUR (с учетом выходного): {eur_rate} руб.")
+```
+
+# Пример вызова второй функции conversion_of_transactions_to_rub
+
+* **Рубли (RUB):** Возвращает сумму как есть.
+* **Валюта (USD/EUR):** Автоматически запрашивает курс ЦБ РФ на дату операции и пересчитывает сумму.
+* **Отказоустойчивость:** Если в валютной транзакции нет даты или API недоступно, функция возвращает `0.0`.
+
+**Пример использования:**
+
+```python
+from src.external_api import conversion_of_transactions_to_rub
+
+# 1. Пример рублевой транзакции (не требует запросов к API)
+rub_transaction = {
+    "date": "2023-10-25T14:30:00.000000",
+    "operationAmount": {
+        "amount": "5500.75",
+        "currency": {"name": "руб.", "code": "RUB"}
+    }
+}
+
+amount_rub = conversion_of_transactions_to_rub(rub_transaction)
+print(f"Сумма: {amount_rub} руб.")  # Выведет: Сумма: 5500.75 руб.
+
+
+# 2. Пример валютной транзакции (автоматически конвертируется по курсу ЦБ)
+usd_transaction = {
+    "date": "2023-10-25T14:30:00.000000",
+    "operationAmount": {
+        "amount": "100.00",
+        "currency": {"name": "USD", "code": "USD"}
+    }
+}
+
+amount_usd_to_rub = conversion_of_transactions_to_rub(usd_transaction)
+print(f"Сумма в рублях: {amount_usd_to_rub} руб.")  # Выведет: Сумма в рублях: 9345.74 руб.
 ```
 
 ## Тестирование и покрытие (Coverage)
@@ -324,6 +412,9 @@ poetry install
   poetry run pytest test/test_widget.py
   poetry run pytest test/test_processing.py
   poetry run pytest test/test_generators.py
+  poetry run pytest tests/test_decorators.py
+  poetry run pytest tests/test_utils.py
+  poetry run pytest tests/test_external_api.py
   ```
 * **Запуск тестов декоратора:**
 ```bash
