@@ -40,8 +40,8 @@ def test_get_mask_account_success(account_number: str, expected_result: str) -> 
 def test_get_mask_account_number_error() -> None:  # тест на вызываемые ошибки
     with pytest.raises(ValueError) as err:
         get_mask_account("")
-        assert str(err.value) == "Ошибка - длина номера счета должна быть ровно 20 символов."
+    assert str(err.value) == "Ошибка - длина номера счета должна быть ровно 20 символов."
 
     with pytest.raises(ValueError) as err:
         get_mask_account("73084 3dg01 35511 -5468")
-        assert str(err.value) == "Ошибка - номер счета должен состоять только из цифр."
+    assert str(err.value) == "Ошибка - номер счета должен состоять только из цифр."
