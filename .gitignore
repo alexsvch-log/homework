@@ -4,6 +4,11 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 *.pyc
-helper.py
+helpers.py
+helper_masks.py
+helper_utils.py
 .env
 /logs/current_rate.txt
+/data/card_account_data.json
+/data/utils_data.json
+/logs/utils.log
