@@ -8,7 +8,8 @@ helpers.py
 helper_masks.py
 helper_utils.py
 .env
-/logs/current_rate.txt
 /data/card_account_data.json
 /data/utils_data.json
+/logs/current_rate.txt
 /logs/utils.log
+/logs/masks.log
