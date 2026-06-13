@@ -14,3 +14,5 @@ helper_utils.py
 /logs/utils.log
 /logs/masks.log
 /run_tests.py
+/data/transactions.csv
+/data/transactions_excel.xlsx
