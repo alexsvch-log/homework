@@ -14,3 +14,7 @@ if __name__ == "__main__":
     print_hi("PyCharm")
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
+# from src import transaction_reader_in_csv_xlsx
+# help(transaction_reader_in_csv_xlsx.transaction_reader_in_csv)
+# help(transaction_reader_in_csv_xlsx.transaction_reader_in_xlsx)
