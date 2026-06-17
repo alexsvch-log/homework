@@ -13,3 +13,6 @@ helper_utils.py
 /logs/current_rate.txt
 /logs/utils.log
 /logs/masks.log
+/run_tests.py
+/data/transactions.csv
+/data/transactions_excel.xlsx
