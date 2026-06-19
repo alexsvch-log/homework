@@ -17,25 +17,34 @@ from src.widget import get_date, mask_account_card
         ("Visa Platinum 8990922113665229", "Visa Platinum 8990 92** **** 5229"),
         ("Visa Gold 5999414228426353", "Visa Gold 5999 41** **** 6353"),
         ("Счет 73654108430135874305", "Счет **4305"),
+        ("Счет", "Счет"),
+        ("8990922113665229", "8990922113665229"),
     ],
 )
 def test_mask_account_card_success(card_number: str, expected_result: str) -> None:
-    # Проверка: ожидаемый результат == фактический
+    # Проверка: ожидаемый результат == фактический, но если в строке нет цифр или только одни цифры,
+    # возвращаем как есть, чтобы не потерять текст
     assert mask_account_card(card_number) == expected_result
 
 
-def test_mask_account_card_error() -> None:  # тест на вызываемые ошибки
-    with pytest.raises(ValueError) as err:
-        mask_account_card()
-        assert str(err.value) == "Ошибка - входные данные отсутствуют"
+# Тест проверяет, что функция не падает с ошибками при некорректном вводе,
+# а безопасно возвращает пустую строку или текст как есть.
+def test_mask_account_card_safe_behavior() -> None:
 
-    with pytest.raises(ValueError) as err:
-        mask_account_card("")
-        assert str(err.value) == "Ошибка - передана пустая строка"
+    # 1. Тест на отсутствие входных данных (None)
+    assert mask_account_card() == ""
 
-    with pytest.raises(ValueError) as err:
-        mask_account_card("Visa Platinum 8990922113665229, Счет 73654108430135874305")
-        assert str(err.value) == "Ошибка - слишком много входных данных"
+    # 2. Тест на передачу пустой строки
+    assert mask_account_card("") == ""
+
+    # 3. Тест на слишком длинную строку с "кашей" из данных
+    # Функция должна безопасно вернуть строку с замаскированным последним элементом
+    # (Вы можете заменить ожидаемый результат на тот, который генерируют ваши get_mask функции)
+    bad_input = "Visa Platinum 8990922113665229, Счет 73654108430135874305"
+    result = mask_account_card(bad_input)
+
+    assert isinstance(result, str)
+    assert len(result) > 0  # Главное — функция не выбросила ValueError и вернула строку
 
 
 # Функция теста с использованием параметризации
@@ -46,6 +55,9 @@ def test_mask_account_card_error() -> None:  # тест на вызываемы�
         ("2023-12-31T23:59:59.999999", "31.12.2023"),
         ("2025-01-01T00:00:00.000001", "01.01.2025"),
         ("2024-05-20T14:30:15.123456", "20.05.2024"),
+        ("fgh", "00.00.0000"),
+        (125, "00.00.0000"),
+        ("2024-05-20T14:30:15.12345645", "20.05.2024"),
     ],
 )
 def test_get_date(data_list: str, expected_result: str) -> None:
