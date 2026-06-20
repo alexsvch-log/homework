@@ -1,6 +1,7 @@
 import csv
 from pathlib import Path
 from typing import Literal
+
 import pandas as pd
 
 
@@ -66,7 +67,8 @@ def transaction_reader_in_xlsx(file_path: Path) -> list[dict] | str:
 
     # 1. Если файл не существует
     if not file_path.exists():
-        return f"Ошибка: Файл не найден по пути {file_path}"
+        print(f"Предупреждение: Файл не найден по пути {file_path}")  # Можно напечатать в консоль
+        return []
 
     # 2. Если неверное расширение
     ext = file_path.suffix.lower()
@@ -77,7 +79,8 @@ def transaction_reader_in_xlsx(file_path: Path) -> list[dict] | str:
     elif ext == ".xls":
         engine = "xlrd"
     else:
-        return f"Ошибка: Неподдерживаемый формат файла '{ext}'."
+        print(f"Предупреждение: Неподдерживаемый формат файла '{ext}'.")
+        return []
 
     try:
         # 3. Читаем листы
@@ -99,4 +102,5 @@ def transaction_reader_in_xlsx(file_path: Path) -> list[dict] | str:
 
     except Exception as e:
         # 5. Если файл сломан или поврежден
-        return f"Ошибка при чтении файла: {e}"
+        print(f"Предупреждение при чтении файла: {e}")
+        return []

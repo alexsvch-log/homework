@@ -87,3 +87,9 @@ def list_of_bad_transactions() -> list:
             "to": "Счет 75651667383060284188",
         }
     ]
+
+
+# Фикстура для тестов  функций process_bank_operations из модуля process_bank
+@pytest.fixture
+def valid_categories() -> list:
+    return ["Перевод с карты на карту", "Перевод со счета на счет", "Оплата услуг", "Перевод организации"]

@@ -15,29 +15,40 @@ def mask_account_card(card_account_number: str | None = None) -> str:
     состоящая только из наименования карты, либо только из слова 'Счет',
     либо из только из набора цифр, не рассматривается"""
 
-    if card_account_number is None:  # Проверка - передано ли хоть что-то
-        raise ValueError("Ошибка - входные данные отсутствуют")
+    # 1. Безопасная проверка на None или пустую строку
+    if not card_account_number or not isinstance(card_account_number, str):
+        return ""
 
     parts: list[str] = card_account_number.split()
 
-    if not parts:  # Если передана пустая строка ""
-        raise ValueError("Ошибка - передана пустая строка")
+    # 2. Если в строке нет цифр или только одно слово (нет номера)
+    if len(parts) < 2:
+        return card_account_number  # Возвращаем как есть, чтобы не потерять текст
 
-    if len(parts) not in [2, 3]:  # Если передано более двух строк
-        raise ValueError("Ошибка - слишком много входных данных")
+    # Извлекаем сам номер (всегда последнее слово в строке)
+    number_part: str = parts[-1]
 
-    if "Счет" in card_account_number:  # Если в строке присутствует слово 'Счет', то это номер расчетного счета
-        account_number: str = card_account_number.split()[-1]
-        return f"Счет {get_mask_account(account_number)}"
+    # Извлекаем название (все слова до номера)
+    name_part: str = " ".join(parts[:-1])
 
-    card_number: str = parts[-1]
-    card_name: str = " ".join(parts[:-1])
-    return f"{card_name} {get_mask_card_number(card_number)}"
+    # 3. Логика для Счета
+    if "Счет" in name_part:
+        return f"Счет {get_mask_account(number_part)}"
+
+    # 4. Логика для Карты
+    return f"{name_part} {get_mask_card_number(number_part)}"
 
 
 def get_date(data_time: str) -> str:
     """Функция принимает на вход строку с датой в формате "2024-03-11T02:26:18.671407" и возвращает строку с датой
     в ISO формате "ДД.ММ.ГГГГ" ("11.03.2024")"""
-
-    date: datetime = datetime.fromisoformat(data_time)
-    return date.strftime("%d.%m.%Y")
+    if not data_time or not isinstance(data_time, str):
+        return "00.00.0000"
+    try:
+        # Срез [:19] отсекает микросекунды, оставляя 'ГГГГ-ММ-ДДTЧЧ:ММ:СС'
+        # Это приводит все даты к одному стандарту для старых версий Python
+        clean_date = data_time[:19]
+        date_obj = datetime.fromisoformat(clean_date)
+        return date_obj.strftime("%d.%m.%Y")
+    except ValueError:
+        return "00.00.0000"

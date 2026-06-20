@@ -2,6 +2,7 @@
 import csv
 from pathlib import Path
 from unittest.mock import MagicMock, mock_open, patch
+
 import pandas as pd
 import pytest
 
@@ -181,23 +182,20 @@ def test_successful_read_xls(mock_exists: MagicMock, mock_read_excel: MagicMock)
 def test_file_not_found(mock_exists: MagicMock) -> None:
     mock_exists.return_value = False
 
-    result = transaction_reader_in_xlsx(Path("fake_file.xlsx"))
+    result: list[dict] | str = transaction_reader_in_xlsx(Path("fake_file.xlsx"))
 
-    assert isinstance(result, str)
-    assert "Файл не найден" in result  # Эта строчка кода буквально означает: «Проверь, содержится ли маленькая фраза
-    # "Файл не найден" внутри большой строки result». Поскольку фраза там есть, Python считает это утверждение истинным
-    # (True), и тест проходит. Полный текст ошибки зависит от имени файла (в данном случае fake_file.xlsx).
-    # Если вы завтра решите изменить в тесте имя файла на test_data.xlsx, вам пришлось бы переписывать и строку assert.
-    # Использование in избавляет от этого.
+    # Теперь проверяем, что функция вернула именно пустой список
+    assert result == []
+    assert isinstance(result, list)  # Дополнительная проверка типа данных
 
 
 # 4. Функция неудачного теста transaction_reader_in_xlsx (у файла не соответсвующее расширение)
 def test_unsupported_extension() -> None:
     with patch("src.transaction_reader_in_csv_xlsx.Path.exists", return_value=True):
-        result = transaction_reader_in_xlsx(Path("data.txt"))
+        result: list[dict] | str = transaction_reader_in_xlsx(Path("data.txt"))
 
-        assert isinstance(result, str)
-        assert "Неподдерживаемый формат" in result
+        assert result == []
+        assert isinstance(result, list)  # Дополнительная проверка типа данных
 
 
 # 5. Функция неудачного теста transaction_reader_in_xlsx (файл сломан или поврежден)
@@ -208,10 +206,10 @@ def test_exception_handling_corrupted_file(mock_exists: MagicMock, mock_read_exc
     # Имитируем критический сбой парсера pandas (сломанный zip-архив)
     mock_read_excel.side_effect = Exception("Bad zip file")
 
-    result = transaction_reader_in_xlsx(Path("corrupted.xlsx"))
+    result: list[dict] | str = transaction_reader_in_xlsx(Path("corrupted.xlsx"))
 
-    assert isinstance(result, str)
-    assert "Ошибка при чтении файла" in result
+    assert result == []
+    assert isinstance(result, list)  # Дополнительная проверка типа данных
 
 
 # 6. Функция неудачного теста transaction_reader_in_xlsx (файл успешно прочитан, но все листы пустые)
